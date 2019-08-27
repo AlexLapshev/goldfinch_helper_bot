@@ -1,26 +1,32 @@
 import telebot
-from telebot import apihelper
 import requests
 import random
+from PIL import Image
+from io import BytesIO
 
-
-apihelper.proxy = {'https': 'socks5h://382210467:yJD0LQSj@orbtl.s5.opennetwork.cc:999'}
 
 TOKEN = '927573390:AAEdFSK1j5Q6_n_WRjV7OHYHzgalY7tPN0c'
 YOUTUBE_KEY = 'AIzaSyCccZT5OAsd_Hio2N8JREeaQP8lytS5C5I'
 
 bot = telebot.TeleBot(TOKEN)
 
+photo_download_link = 'https://api.telegram.org/file/bot{}/'.format(TOKEN)
+
 allowed_users = ['lapsha666']
 
 
-@bot.message_handler(content_types=['text'])
+@bot.message_handler(content_types=['text', 'photo'])
 def get_text_message(message):
 	username = message.from_user.username
-	if message.text.lower().startswith('щегол'):
-		youtube_video(message, username)
-	elif 'подтверди щегол' in message.text.lower():
-		yes_my_lord(message, username)
+
+	if message.content_type == 'text':
+		if message.text.lower().startswith('щегол'):
+			youtube_video(message, username)
+		elif 'подтверди щегол' in message.text.lower():
+			yes_my_lord(message, username)
+	elif message.content_type == 'photo' and message.caption:
+		if message.caption.lower() == 'щегол':
+			combining_image(message)
 
 
 def youtube_video(message, username):
@@ -47,6 +53,28 @@ def yes_my_lord(message, username):
 												'Зачем @{} ты что-то доказываешь этим холопам?'])).format(username))
 	else:
 		bot.reply_to(message, 'Ничего не буду подтверждать. Не стоит спорить с барином.')
+
+
+def combining_image(message):
+	photo_id = message.json['photo'][-1]['file_id']
+	photo_link = 'https://api.telegram.org/bot{}/getFile?file_id={}'.format(TOKEN, photo_id)
+	file_path = requests.get(photo_link).json()['result']['file_path']
+
+	full_path = 'https://api.telegram.org/file/bot{}/{}'.format(TOKEN, file_path)
+	img = requests.get(full_path)
+	background = Image.open(BytesIO(img.content))
+	width = background.size[1] // 3
+	size = (width, width)
+	foreground = Image.open('images/shlem_LOGO_white_with_texture.png')
+	foreground = foreground.resize(size, Image.ANTIALIAS)
+	background.paste(foreground, (0, 0), foreground)
+
+	img_byte_arr = BytesIO()
+	background.save(img_byte_arr, format='JPEG')
+	img_byte_arr = img_byte_arr.getvalue()
+
+	bot.delete_message(message.chat.id, message.message_id)
+	bot.send_photo(message.chat.id, img_byte_arr)
 
 
 if __name__ == '__main__':
