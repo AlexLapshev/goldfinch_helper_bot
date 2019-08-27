@@ -5,8 +5,8 @@ from PIL import Image
 from io import BytesIO
 
 
-TOKEN = ''
-YOUTUBE_KEY = ''
+TOKEN = '927573390:AAEdFSK1j5Q6_n_WRjV7OHYHzgalY7tPN0c'
+YOUTUBE_KEY = 'AIzaSyCccZT5OAsd_Hio2N8JREeaQP8lytS5C5I'
 
 bot = telebot.TeleBot(TOKEN)
 
