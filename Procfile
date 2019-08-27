@@ -1,1 +1,1 @@
-worker: python main.py $PORT
+worker: python youtube_searcher_bot $PORT
