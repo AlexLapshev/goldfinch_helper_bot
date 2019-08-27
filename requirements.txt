@@ -1,4 +1,3 @@
-(venv) ? pip freeze
 certifi==2019.6.16
 chardet==3.0.4
 gunicorn==19.9.0
