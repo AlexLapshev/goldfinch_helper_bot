@@ -40,7 +40,7 @@ def youtube_video(message, username):
 		video_id = youtube_searcher.json()['items'][0]['id']['videoId']
 		bot.delete_message(message.chat.id, message.message_id)
 		bot.send_message(message.chat.id,
-						 'Не благодари, петух. \n https://www.youtube.com/watch?v={}'.format(video_id))
+						 'Не благодари. \n https://www.youtube.com/watch?v={}'.format(video_id))
 	else:
 		bot.send_message(message.chat.id,
 						 'Сам ты щегол @{}, введи нормальный запрос: "Щегол <название видео>".'.format(username))
