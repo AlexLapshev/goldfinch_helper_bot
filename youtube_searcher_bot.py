@@ -3,10 +3,11 @@ import requests
 import random
 from PIL import Image
 from io import BytesIO
+import json
 
 
-TOKEN = ''
-YOUTUBE_KEY = ''
+TOKEN = '927573390:AAEdFSK1j5Q6_n_WRjV7OHYHzgalY7tPN0c'
+YOUTUBE_KEY = 'AIzaSyCccZT5OAsd_Hio2N8JREeaQP8lytS5C5I'
 
 bot = telebot.TeleBot(TOKEN)
 
@@ -37,7 +38,12 @@ def youtube_video(message, username):
 			'key': YOUTUBE_KEY,
 			'part': ['snippet'],
 			'q': '{}'.format(video)})
-		video_id = youtube_searcher.json()['items'][0]['id']['videoId']
+		parsed = json.loads(youtube_searcher.text)
+		print(json.dumps(parsed, indent=4, sort_keys=True))
+		if 'channelId' in youtube_searcher.json()['items'][0]['id']:
+			video_id = youtube_searcher.json()['items'][1]['id']['videoId']
+		else:
+			video_id = youtube_searcher.json()['items'][0]['id']['videoId']
 		bot.delete_message(message.chat.id, message.message_id)
 		bot.send_message(message.chat.id,
 						 'Не благодари. \n https://www.youtube.com/watch?v={}'.format(video_id))
